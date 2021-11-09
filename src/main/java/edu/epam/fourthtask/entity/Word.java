@@ -1,33 +1,24 @@
 package edu.epam.fourthtask.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Word implements TextComponent {
-    List<TextComponent> symbols;
+    String wordString;
 
-    public Word() {
-        symbols = new ArrayList<>();
+    public Word(String wordString) {
+        this.wordString = wordString;
     }
 
     @Override
     public String restore() {
-        StringBuilder stringBuilder = new StringBuilder();
-        symbols
-                .stream()
-                .forEachOrdered(
-                        x -> stringBuilder.append(x.restore())
-                );
-        return stringBuilder.toString();
+        return wordString;
     }
 
     @Override
     public void add(TextComponent component) {
-        symbols.add(component);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void remove(TextComponent component) {
-        symbols.remove(component);
+        throw new UnsupportedOperationException();
     }
 }

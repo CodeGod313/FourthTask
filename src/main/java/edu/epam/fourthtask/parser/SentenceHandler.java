@@ -7,15 +7,16 @@ import java.util.Arrays;
 
 public class SentenceHandler extends TextHandler {
 
-    private TextHandler successor = new
-    public static final String SENTENCE_DELIMITER = "[A-Z].+(\\.\\.\\.|\\!|\\?|\\.)";
+    private TextHandler successor = new SentencePartsHandler();
+    public static final String SENTENCE_DELIMITER = "[A-Z].*(\\.{3}|\\!|\\?|\\.)";
 
     @Override
     public void handle(TextComponent textComponent, String textPart) {
-        String sentences[] = textPart.split(SENTENCE_DELIMITER);
-        Arrays.stream(sentences).forEachOrdered(x->{
+        String[] sentences = textPart.split(SENTENCE_DELIMITER);
+        Arrays.stream(sentences).forEachOrdered(x -> {
             TextComponent sentence = new Sentence();
-
+            successor.handle(sentence, textPart);
+            textComponent.add(sentence);
         });
     }
 }

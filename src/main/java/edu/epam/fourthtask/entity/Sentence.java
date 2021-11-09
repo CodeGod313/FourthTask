@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Sentence implements TextComponent {
-    private List<TextComponent> words;
+    private List<TextComponent> wordsAndSymbols;
 
     public Sentence() {
-        words = new ArrayList<>();
+        wordsAndSymbols = new ArrayList<>();
     }
 
     @Override
     public String restore() {
         StringBuilder stringBuilder = new StringBuilder();
-        words
+        wordsAndSymbols
                 .stream()
                 .forEachOrdered(
                         x -> stringBuilder.append(x.restore())
@@ -23,11 +23,11 @@ public class Sentence implements TextComponent {
 
     @Override
     public void add(TextComponent component) {
-        words.add(component);
+        wordsAndSymbols.add(component);
     }
 
     @Override
     public void remove(TextComponent component) {
-        words.add(component);
+        wordsAndSymbols.add(component);
     }
 }

@@ -1,11 +1,15 @@
 package edu.epam.fourthtask.entity;
 
-public class Symbol implements TextComponent{
-    private Character symbol;
+public class Symbol implements TextComponent {
+    private Character character;
+
+    public Symbol(Character character) {
+        this.character = character;
+    }
 
     @Override
     public String restore() {
-        return String.valueOf(symbol);
+        return String.valueOf(character);
     }
 
     @Override
