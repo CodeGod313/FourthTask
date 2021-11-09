@@ -1,5 +1,7 @@
 package edu.epam.fourthtask.parser;
 
+import edu.epam.fourthtask.entity.TextComponent;
+
 public abstract class TextHandler {
-    public abstract String handle(String textPart);
+    public abstract void handle(TextComponent textComponent, String textPart);
 }
