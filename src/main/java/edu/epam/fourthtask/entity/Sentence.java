@@ -30,4 +30,9 @@ public class Sentence implements TextComponent {
     public void remove(TextComponent component) {
         wordsAndSymbols.add(component);
     }
+
+    @Override
+    public List<TextComponent> receiveChild() {
+        return wordsAndSymbols;
+    }
 }

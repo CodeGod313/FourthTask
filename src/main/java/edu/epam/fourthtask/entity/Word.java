@@ -1,5 +1,7 @@
 package edu.epam.fourthtask.entity;
 
+import java.util.List;
+
 public class Word implements TextComponent {
     String wordString;
 
@@ -19,6 +21,11 @@ public class Word implements TextComponent {
 
     @Override
     public void remove(TextComponent component) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<TextComponent> receiveChild() {
         throw new UnsupportedOperationException();
     }
 }

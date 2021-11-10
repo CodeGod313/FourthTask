@@ -30,4 +30,9 @@ public class Paragraph implements TextComponent {
     public void remove(TextComponent component) {
         sentences.add(component);
     }
+
+    @Override
+    public List<TextComponent> receiveChild() {
+        return sentences;
+    }
 }

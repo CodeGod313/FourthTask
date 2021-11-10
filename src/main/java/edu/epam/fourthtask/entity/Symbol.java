@@ -1,5 +1,7 @@
 package edu.epam.fourthtask.entity;
 
+import java.util.List;
+
 public class Symbol implements TextComponent {
     private Character character;
 
@@ -19,6 +21,11 @@ public class Symbol implements TextComponent {
 
     @Override
     public void remove(TextComponent component) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<TextComponent> receiveChild() {
         throw new UnsupportedOperationException();
     }
 }
