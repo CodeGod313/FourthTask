@@ -2,13 +2,18 @@ package edu.epam.fourthtask.service.impl;
 
 import edu.epam.fourthtask.entity.ParsedText;
 import edu.epam.fourthtask.entity.Sentence;
+import edu.epam.fourthtask.entity.TextComponent;
 import edu.epam.fourthtask.service.TextService;
+import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 public class TextServiceImpl implements TextService {
+    public static final String REGEX_SYMBOLS = "[,\\.\\?\\!]";
+
     @Override
     public void sortParagraphs(ParsedText parsedText) {
         parsedText
@@ -18,46 +23,59 @@ public class TextServiceImpl implements TextService {
     }
 
     @Override
-    public List<Sentence> searchSentencesWithLongestWord(ParsedText parsedText) {
-        // TODO: 09.11.2021 refactor govnocode
-        String longestWord = parsedText
-                .receiveChild()
+    public List<TextComponent> searchSentencesWithLongestWord(ParsedText parsedText) {
+        List<TextComponent> paragraphs = parsedText.receiveChild();
+        List<TextComponent> sentences = new ArrayList<>();
+        paragraphs.forEach(x -> sentences.addAll(x.receiveChild()));
+        List<TextComponent> sentenceComponents = new ArrayList<>();
+        sentences.forEach(x -> sentenceComponents.addAll(x.receiveChild()));
+        List<String> words = sentenceComponents
                 .stream()
-                .map(x -> x.receiveChild()
-                        .stream()
-                        .reduce((y, z) -> {
-                            if (z.restore().length() > y.restore().length()) {
-                                return z;
-                            } else {
-                                return y;
-                            }
-                        }))
-                .map(o -> o.get().restore())
-                .findFirst()
+                .map(TextComponent::restore)
+                .filter(x -> !x.matches(REGEX_SYMBOLS))
+                .toList();
+        String longestWord = words
+                .stream()
+                .max(Comparator.comparingInt(String::length))
                 .get();
-        // TODO: 09.11.2021 refactor this shit
-        return parsedText
-                .receiveChild()
+        List<TextComponent> filteredSentences = sentences
                 .stream()
-                .map(x->x.receiveChild()
+                .filter(x -> {
+                    List<String> longestWords = x.receiveChild()
                             .stream()
-                            .filter(
-                                    y->y.receiveChild()
-                                            .stream()
-                                            .filter(z->z.restore().equals(longestWord))
-                                            .count() != 0
-                            )
-                );
+                            .map(TextComponent::restore)
+                            .filter(y -> y.equals(longestWord))
+                            .toList();
+                    return longestWords.size() > 0;
+                })
+                .toList();
+        return filteredSentences;
     }
 
     @Override
     public void deleteSentencesWithLessWordsThan(ParsedText parsedText, Integer count) {
-        // TODO: 09.11.2021 add realisation
+        List<TextComponent> paragraphs = parsedText.receiveChild();
+        for (TextComponent currentParagraph : paragraphs) {
+            List<TextComponent> sentences = currentParagraph.receiveChild();
+            List<TextComponent> sentencesToRemove = new ArrayList<>();
+            sentences.forEach(x -> {
+                List<String> words = x
+                        .receiveChild()
+                        .stream()
+                        .map(TextComponent::restore)
+                        .filter(y -> !y.matches(REGEX_SYMBOLS))
+                        .toList();
+                if (words.size() < count) {
+                    sentencesToRemove.add(x);
+                }
+            });
+            sentencesToRemove.forEach(currentParagraph::remove);
+        }
     }
 
     @Override
     public Map<String, Integer> findSameWordsWithQuantity(ParsedText parsedText) {
-        // TODO: 09.11.2021 add realisation
+
     }
 
     @Override
