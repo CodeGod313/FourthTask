@@ -25,6 +25,16 @@ public class Word implements TextComponent {
     }
 
     @Override
+    public void addAll(List<TextComponent> textComponents) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void removeAll() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public List<TextComponent> receiveChild() {
         throw new UnsupportedOperationException();
     }

@@ -27,6 +27,16 @@ public class ParsedText implements TextComponent {
     }
 
     @Override
+    public void addAll(List<TextComponent> textComponents) {
+        paragraphs.addAll(textComponents);
+    }
+
+    @Override
+    public void removeAll() {
+        paragraphs.clear();
+    }
+
+    @Override
     public List<TextComponent> receiveChild() {
         return paragraphs;
     }

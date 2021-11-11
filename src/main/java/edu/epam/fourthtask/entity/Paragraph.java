@@ -32,6 +32,16 @@ public class Paragraph implements TextComponent {
     }
 
     @Override
+    public void addAll(List<TextComponent> textComponents) {
+        sentences.addAll(textComponents);
+    }
+
+    @Override
+    public void removeAll() {
+        sentences.clear();
+    }
+
+    @Override
     public List<TextComponent> receiveChild() {
         return sentences;
     }

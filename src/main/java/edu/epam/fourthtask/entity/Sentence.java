@@ -32,6 +32,16 @@ public class Sentence implements TextComponent {
     }
 
     @Override
+    public void addAll(List<TextComponent> textComponents) {
+        wordsAndSymbols.addAll(textComponents);
+    }
+
+    @Override
+    public void removeAll() {
+        wordsAndSymbols.clear();
+    }
+
+    @Override
     public List<TextComponent> receiveChild() {
         return wordsAndSymbols;
     }

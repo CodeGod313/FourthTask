@@ -13,10 +13,13 @@ public class TextServiceImpl implements TextService {
 
     @Override
     public void sortParagraphs(ParsedText parsedText) {
-        parsedText
+        List<TextComponent> sortedParagraphs = parsedText
                 .receiveChild()
                 .stream()
-                .sorted(Comparator.comparingInt(x -> x.receiveChild().size()));
+                .sorted(Comparator.comparingInt(x -> x.receiveChild().size()))
+                .toList();
+        parsedText.removeAll();
+        parsedText.addAll(sortedParagraphs);
     }
 
     @Override
