@@ -1,18 +1,15 @@
 package edu.epam.fourthtask.service.impl;
 
 import edu.epam.fourthtask.entity.ParsedText;
-import edu.epam.fourthtask.entity.Sentence;
 import edu.epam.fourthtask.entity.TextComponent;
 import edu.epam.fourthtask.service.TextService;
-import org.w3c.dom.Text;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TextServiceImpl implements TextService {
     public static final String REGEX_SYMBOLS = "[,\\.\\?\\!]";
+    public static final String REGEX_VOWELS = "[AEIOUY]";
+    public static final String REGEX_CONSONANTS = "[BCDFGHJKLMNPQRSTVWXYZ]";
 
     @Override
     public void sortParagraphs(ParsedText parsedText) {
@@ -27,13 +24,7 @@ public class TextServiceImpl implements TextService {
         List<TextComponent> paragraphs = parsedText.receiveChild();
         List<TextComponent> sentences = new ArrayList<>();
         paragraphs.forEach(x -> sentences.addAll(x.receiveChild()));
-        List<TextComponent> sentenceComponents = new ArrayList<>();
-        sentences.forEach(x -> sentenceComponents.addAll(x.receiveChild()));
-        List<String> words = sentenceComponents
-                .stream()
-                .map(TextComponent::restore)
-                .filter(x -> !x.matches(REGEX_SYMBOLS))
-                .toList();
+        List<String> words = receiveAllWords(parsedText);
         String longestWord = words
                 .stream()
                 .max(Comparator.comparingInt(String::length))
@@ -75,16 +66,46 @@ public class TextServiceImpl implements TextService {
 
     @Override
     public Map<String, Integer> findSameWordsWithQuantity(ParsedText parsedText) {
-
+        List<String> words = receiveAllWords(parsedText);
+        Map<String, Integer> sameWords = new HashMap<>();
+        words.stream().forEach(x -> {
+            if (sameWords.containsKey(x)) {
+                Integer oldQuantity = sameWords.get(x);
+                sameWords.replace(x, ++oldQuantity);
+            } else {
+                sameWords.put(x, 1);
+            }
+        });
+        return sameWords;
     }
 
     @Override
     public Integer countVowels(ParsedText parsedText) {
-        // TODO: 09.11.2021 add realisation
+        String text = parsedText.restore();
+        text = text.toUpperCase();
+        String vowels[] = text.split(REGEX_VOWELS);
+        return vowels.length;
+
     }
 
     @Override
     public Integer countConsonants(ParsedText parsedText) {
-        // TODO: 09.11.2021 add realisation
+        String text = parsedText.restore();
+        text = text.toUpperCase();
+        String consonants[] = text.split(REGEX_CONSONANTS);
+        return consonants.length;
+    }
+
+    private List<String> receiveAllWords(ParsedText parsedText) {
+        List<TextComponent> paragraphs = parsedText.receiveChild();
+        List<TextComponent> sentences = new ArrayList<>();
+        paragraphs.forEach(x -> sentences.addAll(x.receiveChild()));
+        List<TextComponent> sentenceComponents = new ArrayList<>();
+        sentences.forEach(x -> sentenceComponents.addAll(x.receiveChild()));
+        return sentenceComponents
+                .stream()
+                .map(TextComponent::restore)
+                .filter(x -> !x.matches(REGEX_SYMBOLS))
+                .toList();
     }
 }
