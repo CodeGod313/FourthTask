@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Paragraph implements TextComponent {
+    public static final String TABULATION = "    ";
+    public static final String NEW_LINE = "\n";
     private List<TextComponent> sentences;
 
     public Paragraph() {
@@ -15,9 +17,11 @@ public class Paragraph implements TextComponent {
         StringBuilder stringBuilder = new StringBuilder();
         sentences
                 .stream()
-                .forEachOrdered(
-                        x -> stringBuilder.append(x.restore())
-                );
+                .forEachOrdered(x -> {
+                    stringBuilder.append(TABULATION);
+                    stringBuilder.append(x.restore());
+                    stringBuilder.append(NEW_LINE);
+                });
         return stringBuilder.toString();
     }
 

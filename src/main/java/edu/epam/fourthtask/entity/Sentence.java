@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Sentence implements TextComponent {
+    public static final String SPACE = " ";
     private List<TextComponent> wordsAndSymbols;
+    public static final String REGEX_SYMBOLS = "[,\\.\\?\\!-=\\(\\)]";
 
     public Sentence() {
         wordsAndSymbols = new ArrayList<>();
@@ -15,10 +17,13 @@ public class Sentence implements TextComponent {
         StringBuilder stringBuilder = new StringBuilder();
         wordsAndSymbols
                 .stream()
-                .forEachOrdered(
-                        x -> stringBuilder.append(x.restore())
-                );
-        return stringBuilder.toString();
+                .forEachOrdered(x -> {
+                    if (!x.restore().matches(REGEX_SYMBOLS)) {
+                        stringBuilder.append(SPACE);
+                    }
+                    stringBuilder.append(x.restore());
+                });
+        return stringBuilder.toString().trim();
     }
 
     @Override

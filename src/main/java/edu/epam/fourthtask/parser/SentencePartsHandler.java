@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 
 public class SentencePartsHandler extends TextHandler {
 
-    public static final String REGEX_WORDS_AND_SYMBOLS = "[A-Za-z]+|[,\\.\\?\\!]";
-    public static final String REGEX_SYMBOLS = "[,\\.\\?\\!]";
+    public static final String REGEX_WORDS_AND_SYMBOLS = "[A-Za-z]+|[,\\.\\?\\!-=\\(\\)]";
+    public static final String REGEX_SYMBOLS = "[,\\.\\?\\!-=\\(\\)]";
 
     @Override
     public void handle(TextComponent textComponent, String textPart) {

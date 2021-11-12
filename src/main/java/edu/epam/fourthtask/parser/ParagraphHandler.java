@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ParagraphHandler extends TextHandler {
-    public static final String REGEX_PARAGRAPH = "\\s{4}.+[$\\n]";
+    public static final String REGEX_PARAGRAPH = "\\s{4}.+($|\\n)";
     private TextHandler successor = new SentenceHandler();
 
     @Override
