@@ -1,9 +1,14 @@
 package edu.epam.fourthtask.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ParsedText implements TextComponent {
     private List<TextComponent> paragraphs;
+
+    public ParsedText() {
+        this.paragraphs = new ArrayList<>();
+    }
 
     @Override
     public String restore() {
