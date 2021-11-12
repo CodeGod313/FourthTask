@@ -1,7 +1,7 @@
 package edu.epam.fourthtask.parser;
 
-import edu.epam.fourthtask.entity.Sentence;
-import edu.epam.fourthtask.entity.TextComponent;
+import edu.epam.fourthtask.composite.Sentence;
+import edu.epam.fourthtask.composite.TextComponent;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

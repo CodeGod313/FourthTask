@@ -1,8 +1,8 @@
 package edu.epam.fourthtask.parser;
 
-import edu.epam.fourthtask.entity.Symbol;
-import edu.epam.fourthtask.entity.TextComponent;
-import edu.epam.fourthtask.entity.Word;
+import edu.epam.fourthtask.composite.Symbol;
+import edu.epam.fourthtask.composite.TextComponent;
+import edu.epam.fourthtask.composite.Word;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

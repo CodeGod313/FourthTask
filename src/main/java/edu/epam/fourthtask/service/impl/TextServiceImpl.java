@@ -1,7 +1,7 @@
 package edu.epam.fourthtask.service.impl;
 
-import edu.epam.fourthtask.entity.ParsedText;
-import edu.epam.fourthtask.entity.TextComponent;
+import edu.epam.fourthtask.composite.ParsedText;
+import edu.epam.fourthtask.composite.TextComponent;
 import edu.epam.fourthtask.service.TextService;
 
 import java.util.*;

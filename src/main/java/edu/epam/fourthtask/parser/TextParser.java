@@ -1,7 +1,7 @@
 package edu.epam.fourthtask.parser;
 
-import edu.epam.fourthtask.entity.ParsedText;
-import edu.epam.fourthtask.entity.TextComponent;
+import edu.epam.fourthtask.composite.ParsedText;
+import edu.epam.fourthtask.composite.TextComponent;
 
 public class TextParser {
     private TextHandler successor = new ParagraphHandler();

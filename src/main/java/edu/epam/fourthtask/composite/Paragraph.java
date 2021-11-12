@@ -1,4 +1,4 @@
-package edu.epam.fourthtask.entity;
+package edu.epam.fourthtask.composite;
 
 import java.util.ArrayList;
 import java.util.List;
