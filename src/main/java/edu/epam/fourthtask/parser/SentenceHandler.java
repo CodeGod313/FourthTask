@@ -3,20 +3,22 @@ package edu.epam.fourthtask.parser;
 import edu.epam.fourthtask.entity.Sentence;
 import edu.epam.fourthtask.entity.TextComponent;
 
-import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SentenceHandler extends TextHandler {
 
     private TextHandler successor = new SentencePartsHandler();
-    public static final String SENTENCE_DELIMITER = "[A-Z].*(\\.{3}|\\!|\\?|\\.)";
+    public static final String REGEX_SENTENCE = "[A-Z].*(\\.{3}|\\!|\\?|\\.)";
 
     @Override
     public void handle(TextComponent textComponent, String textPart) {
-        String[] sentences = textPart.split(SENTENCE_DELIMITER);
-        Arrays.stream(sentences).forEachOrdered(x -> {
+        Pattern pattern = Pattern.compile(REGEX_SENTENCE);
+        Matcher matcher = pattern.matcher(textPart);
+        while (matcher.find()) {
             TextComponent sentence = new Sentence();
-            successor.handle(sentence, textPart);
+            successor.handle(sentence, textPart.substring(matcher.start(), matcher.end()));
             textComponent.add(sentence);
-        });
+        }
     }
 }
