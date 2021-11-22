@@ -6,6 +6,21 @@ import java.util.List;
 public class ParsedText implements TextComponent {
     private List<TextComponent> paragraphs;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ParsedText that = (ParsedText) o;
+
+        return paragraphs != null ? paragraphs.equals(that.paragraphs) : that.paragraphs == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return paragraphs != null ? paragraphs.hashCode() : 0;
+    }
+
     public ParsedText() {
         this.paragraphs = new ArrayList<>();
     }

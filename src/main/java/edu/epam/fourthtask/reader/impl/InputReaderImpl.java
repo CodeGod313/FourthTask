@@ -11,13 +11,17 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 public class InputReaderImpl implements InputReader {
+    public static final String NEW_LINE = "\n";
     static Logger logger = LogManager.getLogger(InputReaderImpl.class);
 
     @Override
     public String readTextFromFile(Path filePath) throws WrongFilePathException {
         try (Stream<String> lines = Files.lines(filePath)) {
             StringBuilder sb = new StringBuilder();
-            lines.forEach(x -> sb.append(x));
+            lines.forEach(x -> {
+                sb.append(x);
+                sb.append(NEW_LINE);
+            });
             return sb.toString();
         } catch (IOException ex) {
             logger.error("Wrong file path " + filePath, ex);

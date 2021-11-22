@@ -4,6 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Paragraph implements TextComponent {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Paragraph paragraph = (Paragraph) o;
+
+        return sentences != null ? sentences.equals(paragraph.sentences) : paragraph.sentences == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return sentences != null ? sentences.hashCode() : 0;
+    }
+
     public static final String TABULATION = "    ";
     public static final String NEW_LINE = "\n";
     private List<TextComponent> sentences;
@@ -32,7 +47,7 @@ public class Paragraph implements TextComponent {
 
     @Override
     public void remove(TextComponent component) {
-        sentences.add(component);
+        sentences.remove(component);
     }
 
     @Override

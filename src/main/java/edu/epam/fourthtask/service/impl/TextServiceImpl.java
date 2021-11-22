@@ -2,11 +2,15 @@ package edu.epam.fourthtask.service.impl;
 
 import edu.epam.fourthtask.composite.ParsedText;
 import edu.epam.fourthtask.composite.TextComponent;
+import edu.epam.fourthtask.composite.Word;
 import edu.epam.fourthtask.service.TextService;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 
 public class TextServiceImpl implements TextService {
+    static Logger logger = LogManager.getLogger(TextServiceImpl.class);
     public static final String REGEX_SYMBOLS = "[,\\.\\?\\!]";
     public static final String REGEX_VOWELS = "[AEIOUY]";
     public static final String REGEX_CONSONANTS = "[BCDFGHJKLMNPQRSTVWXYZ]";
@@ -53,11 +57,10 @@ public class TextServiceImpl implements TextService {
             List<TextComponent> sentences = currentParagraph.receiveChild();
             List<TextComponent> sentencesToRemove = new ArrayList<>();
             sentences.forEach(x -> {
-                List<String> words = x
+                List<TextComponent> words = x
                         .receiveChild()
                         .stream()
-                        .map(TextComponent::restore)
-                        .filter(y -> !y.matches(REGEX_SYMBOLS))
+                        .filter(y -> y.getClass().equals(Word.class))
                         .toList();
                 if (words.size() < count) {
                     sentencesToRemove.add(x);
@@ -86,7 +89,7 @@ public class TextServiceImpl implements TextService {
     public Integer countVowels(ParsedText parsedText) {
         String text = parsedText.restore();
         text = text.toUpperCase();
-        String vowels[] = text.split(REGEX_VOWELS);
+        String[] vowels = text.split(REGEX_VOWELS);
         return vowels.length;
 
     }
@@ -95,7 +98,7 @@ public class TextServiceImpl implements TextService {
     public Integer countConsonants(ParsedText parsedText) {
         String text = parsedText.restore();
         text = text.toUpperCase();
-        String consonants[] = text.split(REGEX_CONSONANTS);
+        String[] consonants = text.split(REGEX_CONSONANTS);
         return consonants.length;
     }
 

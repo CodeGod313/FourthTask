@@ -2,36 +2,36 @@ package edu.epam.fourthtask.composite;
 
 import java.util.List;
 
-public class Symbol implements TextComponent {
-    private Character character;
-
-    public Symbol(Character character) {
-        this.character = character;
-    }
-
-    @Override
-    public String restore() {
-        return String.valueOf(character);
-    }
+public class ExpressionResult implements TextComponent {
+    Integer result;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Symbol symbol = (Symbol) o;
+        ExpressionResult that = (ExpressionResult) o;
 
-        return character != null ? character.equals(symbol.character) : symbol.character == null;
+        return result != null ? result.equals(that.result) : that.result == null;
     }
 
     @Override
     public int hashCode() {
-        return character != null ? character.hashCode() : 0;
+        return result != null ? result.hashCode() : 0;
+    }
+
+    public ExpressionResult(Integer result) {
+        this.result = result;
+    }
+
+    @Override
+    public String restore() {
+        return result.toString();
     }
 
     @Override
     public void add(TextComponent component) {
-        throw new UnsupportedOperationException("Operation is unsupported");
+        throw new UnsupportedOperationException();
     }
 
     @Override

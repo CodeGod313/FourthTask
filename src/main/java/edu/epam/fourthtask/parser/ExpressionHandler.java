@@ -1,93 +1,77 @@
 package edu.epam.fourthtask.parser;
 
+import edu.epam.fourthtask.exception.UnknownOperationException;
+import edu.epam.fourthtask.parser.util.BitwiseOperationsUtil;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ExpressionHandler {
-    public static final String BITWISE_NOT_EXPRESSION = "~\\d+";
-    public static final String BITWISE_LEFT_SHIFT_EXPRESSION = "(\\(.+\\)((<<)|(>>))\\(.+\\))|(\\(.+\\)((<<)|(>>))\\d+)|(\\d+((<<)|(>>))\\(.+\\))|(\\d+((<<)|(>>))\\d+)";
-    public static final String BITWISE_AND_EXPRESSION = "(\\(.+\\)\\&\\(.+\\))|(\\(.+\\)\\&\\d+)|(\\d+\\&\\(.+\\))|(\\d+\\&\\d+)";
-    public static final String BITWISE_XOR_EXPRESSION = "(\\(.+\\)\\^\\(.+\\))|(\\(.+\\)\\^\\d+)|(\\d+\\^\\(.+\\))|(\\d+\\^\\d+)";
-    public static final String BITWISE_OR_EXPRESSION = "(\\(.+?\\)\\|\\(.+?\\))|(\\(.+?\\)\\|\\d+?)|(\\d+?\\|\\(.+?\\))|(\\d+?\\|\\d+?)";
-    public static final String BITWISE_NOT = "~";
-    public static final String BITWISE_LEFT_SHIFT = "<<";
-    public static final String BITWISE_RIGHT_SHIFT = ">>";
-    public static final String BITWISE_AND = "&";
-    public static final String BITWISE_XOR = "^";
-    public static final String BITWISE_OR = "|";
-    public static final String REPLACEMENT_STRING = "z";
+    static Logger logger = LogManager.getLogger(ExpressionHandler.class);
+    public static final String OPERATION_PARTS = "\\d+|\\(|\\)|>>|<<|\\&|\\^|\\||~";
+    public static final String SPACE = " ";
     Context context = new Context();
 
-    public Integer handle(String expression) {
-        String expressionWithBrackets = addBrackets(expression);
+    public Integer handle(String expression) throws UnknownOperationException {
         MathExpressionParser mathExpressionParser = new MathExpressionParser();
-        List<MathExpression> mathExpressions = mathExpressionParser.parseExpression(expressionWithBrackets);
-        mathExpressions.forEach(x -> {
-            x.interpret(context);
-        });
-        return 0;
+        String polishExpression = toPolishNotation(expression);
+        List<MathExpression> mathExpressions = mathExpressionParser.parseExpression(polishExpression);
+        mathExpressions.forEach(x -> x.interpret(context));
+        return context.pop();
     }
 
-    private String addBrackets(String expression) {
-        StringBuilder modifiedString = new StringBuilder(expression);
-        insertBrackets(modifiedString, BITWISE_NOT);
-        insertBrackets(modifiedString, BITWISE_LEFT_SHIFT);
-        insertBrackets(modifiedString, BITWISE_RIGHT_SHIFT);
-        insertBrackets(modifiedString, BITWISE_AND);
-        insertBrackets(modifiedString, BITWISE_XOR);
-        insertBrackets(modifiedString, BITWISE_OR);
-        return modifiedString.toString();
+    private String toPolishNotation(String expression) throws UnknownOperationException {
+        Pattern pattern = Pattern.compile(OPERATION_PARTS);
+        Matcher matcher = pattern.matcher(expression);
+        StringBuilder polishExpression = new StringBuilder();
+        Deque<String> stack = new ArrayDeque<>();
+        BitwiseOperationsUtil bitwiseOperationsUtil = new BitwiseOperationsUtil();
+        while (matcher.find()) {
+            String expressionPart = matcher.group();
+            switch (expressionPart) {
+                case BitwiseOperationsUtil.BITWISE_AND, BitwiseOperationsUtil.BITWISE_OR, BitwiseOperationsUtil.BITWISE_XOR, BitwiseOperationsUtil.BITWISE_NOT, BitwiseOperationsUtil.BITWISE_RIGHT_SHIFT, BitwiseOperationsUtil.BITWISE_LEFT_SHIFT -> {
+                    Integer priorityInStack = null;
+                    if (!stack.isEmpty()) {
+                        priorityInStack = bitwiseOperationsUtil.receivePriority(stack.peek());
+                    }
+                    Integer currentPriority = bitwiseOperationsUtil.receivePriority(expressionPart);
+                    if (stack.isEmpty() || priorityInStack < currentPriority) {
+                        stack.push(expressionPart);
+                    } else {
+                        while (!stack.isEmpty() && priorityInStack >= currentPriority) {
+                            polishExpression.append(stack.pop());
+                            polishExpression.append(SPACE);
+                            if (!stack.isEmpty()) {
+                                priorityInStack = bitwiseOperationsUtil.receivePriority(stack.peek());
+                            }
+                        }
+                        stack.push(expressionPart);
+                    }
+                }
+                case BitwiseOperationsUtil.OPENING_BRACKET -> stack.push(expressionPart);
+                case BitwiseOperationsUtil.CLOSING_BRACKET -> {
+                    String symbolFromStack;
+                    while (!(symbolFromStack = stack.pop()).equals(BitwiseOperationsUtil.OPENING_BRACKET)) {
+                        polishExpression.append(symbolFromStack);
+                        polishExpression.append(SPACE);
+                    }
+                }
+                default -> {
+                    polishExpression.append(expressionPart);
+                    polishExpression.append(SPACE);
+                }
+            }
+        }
+        while (!stack.isEmpty()) {
+            polishExpression.append(stack.pop());
+            polishExpression.append(SPACE);
+        }
+        return polishExpression.toString().trim();
     }
 
-    private void insertBrackets(StringBuilder modifiedString, String operation) {
-        while (modifiedString.indexOf(operation) != -1) {
-            int i = modifiedString.indexOf(operation);
-            int j = i + operation.length();
-            if (i != 0 && !operation.equals(BITWISE_NOT)) {
-                i--;
-                if (modifiedString.charAt(i) == ')') {
-                    int bracketsCount = 1;
-                    while (bracketsCount != 0) {
-                        i--;
-                        switch (modifiedString.charAt(i)) {
-                            case ')' -> bracketsCount++;
-                            case '(' -> bracketsCount--;
-                        }
-                    }
-                } else {
-                    if (modifiedString.charAt(i) >= '0' && modifiedString.charAt(i) <= '9') {
-                        while (i > 0 && modifiedString.charAt(i - 1) >= '0' && modifiedString.charAt(i - 1) <= '9') {
-                            i--;
-                        }
-                    }
-                }
-            }
-            // j
-            if (j != modifiedString.length()) {
-                if (modifiedString.charAt(j) == '(') {
-                    int bracketsCount = 1;
-                    while (bracketsCount != 0) {
-                        j++;
-                        switch (modifiedString.charAt(j)) {
-                            case ')' -> bracketsCount--;
-                            case '(' -> bracketsCount++;
-                        }
-                    }
-                } else {
-                    if (modifiedString.charAt(j) >= '0' && modifiedString.charAt(j) <= '9') {
-                        while (j < modifiedString.length() && modifiedString.charAt(j) >= '0' && modifiedString.charAt(j) <= '9') {
-                            j++;
-                        }
-                    }
-                }
-            }
-            modifiedString.insert(j, ')');
-            modifiedString.insert(i, '(');
-            int operationStartIndex = modifiedString.indexOf(operation);
-            modifiedString.replace(operationStartIndex, operationStartIndex + operation.length(), REPLACEMENT_STRING);
-        }
-        while (modifiedString.indexOf(REPLACEMENT_STRING) != -1) {
-            int replacementStringStartIndex = modifiedString.indexOf(REPLACEMENT_STRING);
-            modifiedString.replace(replacementStringStartIndex, replacementStringStartIndex + 1, operation);
-        }
-    }
 }

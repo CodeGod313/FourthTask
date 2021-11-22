@@ -10,6 +10,21 @@ public class Word implements TextComponent {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Word word = (Word) o;
+
+        return wordString != null ? wordString.equals(word.wordString) : word.wordString == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return wordString != null ? wordString.hashCode() : 0;
+    }
+
+    @Override
     public String restore() {
         return wordString;
     }
@@ -31,11 +46,11 @@ public class Word implements TextComponent {
 
     @Override
     public void removeAll() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Operation is unsupported");
     }
 
     @Override
     public List<TextComponent> receiveChild() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Operation is unsupported");
     }
 }

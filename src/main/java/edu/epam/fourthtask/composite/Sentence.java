@@ -6,10 +6,25 @@ import java.util.List;
 public class Sentence implements TextComponent {
     public static final String SPACE = " ";
     private List<TextComponent> wordsAndSymbols;
-    public static final String REGEX_SYMBOLS = "[,\\.\\?\\!-=\\(\\)]";
+    public static final String REGEX_SYMBOLS = "[,\\.\\?\\!=]";
 
     public Sentence() {
         wordsAndSymbols = new ArrayList<>();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Sentence sentence = (Sentence) o;
+
+        return wordsAndSymbols != null ? wordsAndSymbols.equals(sentence.wordsAndSymbols) : sentence.wordsAndSymbols == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return wordsAndSymbols != null ? wordsAndSymbols.hashCode() : 0;
     }
 
     @Override
