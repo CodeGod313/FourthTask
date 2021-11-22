@@ -17,14 +17,14 @@ public class ExpressionHandler {
     public static final String REPLACEMENT_STRING = "z";
     Context context = new Context();
 
-    public Double handle(String expression) {
-        addBrackets(expression);
+    public Integer handle(String expression) {
+        String expressionWithBrackets = addBrackets(expression);
         MathExpressionParser mathExpressionParser = new MathExpressionParser();
-        List<MathExpression> mathExpressions = mathExpressionParser.parseExpression(expression);
+        List<MathExpression> mathExpressions = mathExpressionParser.parseExpression(expressionWithBrackets);
         mathExpressions.forEach(x -> {
             x.interpret(context);
         });
-        return 0.;
+        return 0;
     }
 
     private String addBrackets(String expression) {

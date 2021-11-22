@@ -19,8 +19,8 @@ class ExpressionHandlerTest {
 
     @Test
     void handle() {
-        Double actual = expressionHandler.handle("(7^5|1&2<<(2|5>>2&71))|1200");
-        Double expected = 0.;
+        Integer actual = expressionHandler.handle("(7^5|1&2<<(2|5>>2&71))|1200");
+        Integer expected = 0;
         Assertions.assertEquals(expected, actual);
     }
 }
